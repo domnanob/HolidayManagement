@@ -1,10 +1,10 @@
 ﻿@page "/users"
 @rendermode InteractiveServer
 
-@inject Services.UserService userService
-@inject Services.UserDataService userDataService
+@inject Services.Interfaces.IModelService<User> userService
+@inject Services.Interfaces.IModelService<UserData> userDataService
 
-<h3>UsersTestPage</h3>
+<h3>UsersTestPage</h3>  
 
 @if (_users == null)
 {
@@ -15,6 +15,7 @@ else
     @if (_users.Count == 0)
     {
         <div>No data found!</div>
+        <button class="btn btn-outline-info" @onclick="CreateDummyUser">Create Dummy</button>
     }
     else
     {
@@ -34,21 +35,48 @@ else
                         <td>@item.Username</td>
                         <td>
                             <button @onclick="() => DeleteUser(item.Id)" class="btn btn-outline-danger">Delete</button>
-                            <a href="/series/update/@item.Id" class="btn btn-outline-info">Edit</a>
+                            <a href="/users/update/@item.Id" class="btn btn-outline-info">Edit</a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-        <button class="btn btn-outline-info" @onclick="CreateDummyUser">Create Dummy</button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Birth</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in _userDatas)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Email</td>
+                        <td>@item.Phone</td>
+                        <td>@item.Birth</td>
+                        <td>
+                            <button @onclick="() => DeleteUser(item.Id)" class="btn btn-outline-danger">Delete</button>
+                            <a href="/users/update/@item.Id" class="btn btn-outline-info">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     }
 }
 
 @code {
     private List<Models.User> _users;
+    private List<Models.UserData> _userDatas;
     protected override async Task OnInitializedAsync()
     {
         _users = await userService.GetAll() ?? new List<Models.User>();
+        _userDatas = await userDataService.GetAll() ?? new List<Models.UserData>();
     }
     public async void CreateDummyUser()
     {
@@ -69,13 +97,14 @@ else
             RoleId = Guid.NewGuid()
 
         });
+        _users = await userService.GetAll();
         StateHasChanged();
     }
 
     public async void DeleteUser(Guid id)
     {
         await userDataService.Delete(_users.Single(x => x.Id == id).DataId);
-        await userService.Delete(id);
+        //await userService.Delete(id); //cascade miatt nem kell
         
         _users = await userService.GetAll();
         StateHasChanged();

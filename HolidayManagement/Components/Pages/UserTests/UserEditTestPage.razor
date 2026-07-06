@@ -1,0 +1,70 @@
+﻿@page "/users/update/{UserId}"
+@rendermode InteractiveServer
+
+@inject NavigationManager navigation
+@inject Services.Interfaces.IModelService<User> userService
+@inject Services.Interfaces.IModelService<UserData> userDataService
+
+<h3>UserEditTestPage</h3>
+
+@if (SelectedUser == null || SelectedUserData == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="mb-3">
+        <label for="formGroupExampleInput" class="form-label">ID</label>
+        <input @bind-value="SelectedUser.Id" disabled type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder">
+    </div>
+    <div class="mb-3">
+        <label for="formGroupExampleInput2" class="form-label">Username</label>
+        <input @bind-value="SelectedUser.Username" type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input placeholder">
+    </div>
+    <div class="mb-3">
+        <label for="formGroupExampleInput2" class="form-label">Password</label>
+        <input @bind-value="SelectedUser.Password" type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input placeholder">
+    </div>
+    <div class="mb-3">
+        <label for="formGroupExampleInput2" class="form-label">Email</label>
+        <input @bind-value="SelectedUserData.Email" type="email" class="form-control" id="formGroupExampleInput2" placeholder="Another input placeholder">
+    </div>
+    <div class="mb-3">
+        <label for="formGroupExampleInput2" class="form-label">Phone</label>
+        <input @bind-value="SelectedUserData.Phone" type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input placeholder">
+    </div>
+    <div class="mb-3">
+        <label for="formGroupExampleInput2" class="form-label">Birth Date</label>
+        <input @bind-value="SelectedUserData.Birth" type="date" class="form-control" id="formGroupExampleInput2" placeholder="Another input placeholder">
+    </div>
+
+    <button class="btn btn-outline-info" @onclick="UpdateUser">Update</button>
+}
+
+@code {
+    [Parameter]
+    public String UserId { get; set; }
+    private Models.User SelectedUser { get; set; } = new Models.User();
+    private Models.UserData SelectedUserData { get; set; } = new Models.UserData();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            SelectedUser = await userService.Get(Guid.Parse(UserId));
+            SelectedUserData = await userDataService.Get(SelectedUser.DataId);
+        }
+        catch
+        {
+            // keep defaults or handle navigation/logging as needed
+        }
+    }
+
+    private async Task UpdateUser()
+    {
+        await userService.Update(SelectedUser, Guid.Parse(UserId));
+        await userDataService.Update(SelectedUserData, SelectedUser.DataId);
+        StateHasChanged();
+        navigation.NavigateTo("/users");
+    }
+}
