@@ -1,4 +1,8 @@
 using HolidayManagement.Components;
+using HolidayManagement.Services;
+using HolidayManagement.Services.Interfaces;
+using HolidayManagement.Models;
+using HolidayManagement.Database;
 
 namespace HolidayManagement
 {
@@ -11,6 +15,12 @@ namespace HolidayManagement
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
+            builder.Services.AddDbContext<AppDbContext>();
+
+            builder.Services.AddScoped<IModelService<UserData>, UserDataService>();
+            builder.Services.AddScoped<IModelService<User>, UserService>();
+
 
             var app = builder.Build();
 

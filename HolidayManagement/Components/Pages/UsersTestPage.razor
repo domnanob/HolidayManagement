@@ -1,0 +1,84 @@
+﻿@page "/users"
+@rendermode InteractiveServer
+
+@inject Services.UserService userService
+@inject Services.UserDataService userDataService
+
+<h3>UsersTestPage</h3>
+
+@if (_users == null)
+{
+    <span class="placeholder col-6"></span>
+}
+else
+{
+    @if (_users.Count == 0)
+    {
+        <div>No data found!</div>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in _users)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Username</td>
+                        <td>
+                            <button @onclick="() => DeleteUser(item.Id)" class="btn btn-outline-danger">Delete</button>
+                            <a href="/series/update/@item.Id" class="btn btn-outline-info">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button class="btn btn-outline-info" @onclick="CreateDummyUser">Create Dummy</button>
+    }
+}
+
+@code {
+    private List<Models.User> _users;
+    protected override async Task OnInitializedAsync()
+    {
+        _users = await userService.GetAll() ?? new List<Models.User>();
+    }
+    public async void CreateDummyUser()
+    {
+        Models.UserData ud = new Models.UserData()
+        {
+            Id = Guid.NewGuid(),
+            Birth = new DateTime(),
+            Children = 0,
+            Email = "domnanob@gmail.com",
+            Phone = "+36303627517"
+        };
+        await userDataService.Create(ud);
+        await userService.Create(new Models.User()
+        {
+            Username = "Dummy",
+            Password = "Password",
+            DataId = ud.Id,
+            RoleId = Guid.NewGuid()
+
+        });
+        StateHasChanged();
+    }
+
+    public async void DeleteUser(Guid id)
+    {
+        await userDataService.Delete(_users.Single(x => x.Id == id).DataId);
+        await userService.Delete(id);
+        
+        _users = await userService.GetAll();
+        StateHasChanged();
+    }
+
+}
