@@ -21,3 +21,8 @@
 </body>
 
 </html>
+@code
+{
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+}

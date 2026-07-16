@@ -14,7 +14,7 @@ namespace HolidayManagement.Models
         [Column("role_name")]
         public string Name { get; set; }
 
-        [Column("group_id")]
+        [Column("role_group_id")]
         public Guid GroupId { get; set; }
     }
 }

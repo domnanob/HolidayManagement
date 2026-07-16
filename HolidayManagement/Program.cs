@@ -1,8 +1,9 @@
 using HolidayManagement.Components;
+using HolidayManagement.Database;
+using HolidayManagement.Models;
 using HolidayManagement.Services;
 using HolidayManagement.Services.Interfaces;
-using HolidayManagement.Models;
-using HolidayManagement.Database;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace HolidayManagement
 {
@@ -20,7 +21,21 @@ namespace HolidayManagement
 
             builder.Services.AddScoped<IModelService<UserData>, UserDataService>();
             builder.Services.AddScoped<IModelService<User>, UserService>();
+            builder.Services.AddScoped<IModelService<Center>, CenterService>();
+            builder.Services.AddScoped<IModelService<Institution>, InstitutionService>();
+            builder.Services.AddScoped<IModelService<UserInstitution>, UserInstitutionService>();
+            builder.Services.AddScoped<IModelService<Role>, RoleService>();
+            builder.Services.AddScoped<IModelService<RoleGroup>, RoleGroupService>();
 
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
+                options.Cookie.Name = "auth_token";
+                options.LoginPath = "/public/login";
+                options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+                options.AccessDeniedPath = "/public/access-denied";
+            });
+            builder.Services.AddAuthorization();
+            builder.Services.AddCascadingAuthenticationState();
 
             var app = builder.Build();
 
@@ -34,6 +49,9 @@ namespace HolidayManagement
 
             app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseAntiforgery();
 

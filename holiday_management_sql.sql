@@ -16,13 +16,13 @@ begin TRY
 
 	create table centers (
 		id uniqueidentifier Primary Key DEFAULT newsequentialid(),
-		center_name varchar
+		center_name varchar(50)
 	)
 	PRINT 'centers created successfully!'
 
 	create table institutions (
 		id uniqueidentifier Primary Key DEFAULT newsequentialid(),
-		institution_name varchar,
+		institution_name varchar(50),
 		center_id uniqueidentifier,
 		constraint fk_institutions_centers foreign key (center_id) references centers(id) on delete cascade
 	)
@@ -31,13 +31,13 @@ begin TRY
 	create table role_groups (
 		id uniqueidentifier Primary Key DEFAULT newsequentialid(),
 		permission_level int,
-		group_name varchar
+		group_name varchar(20)
 	)
 	PRINT 'role_groups created successfully!'
 
 	create table roles (
 		id uniqueidentifier Primary Key DEFAULT newsequentialid(),
-		role_name varchar,
+		role_name varchar(20),
 		role_group_id uniqueidentifier
 		constraint fk_roles_role_group foreign key (role_group_id) references role_groups(id) on delete cascade
 	)
@@ -45,7 +45,7 @@ begin TRY
 
 	create table user_data (
 		id uniqueidentifier Primary Key DEFAULT newsequentialid(),
-		email varchar unique,
+		email varchar(50),
 		birth date,
 		phone varchar(20),
 		children int
@@ -55,9 +55,8 @@ begin TRY
 	create table users (
 		id uniqueidentifier Primary Key DEFAULT newsequentialid(),
 		user_data_id uniqueidentifier unique,
-		username varchar,
+		username varchar(20),
 		password text,
-		role_id varchar(20),
 		constraint fk_user_userdata foreign key (user_data_id) references user_data(id) on delete cascade
 	)
 	PRINT 'users created successfully!'
@@ -80,9 +79,17 @@ begin TRY
 		constraint fk_login_logs_users foreign key (user_id) references users(id) on delete cascade
 	)
 	PRINT 'login_logs created successfully!'
+
+	insert into role_groups(permission_level,group_name) values(0, 'admin')
+	insert into role_groups(permission_level,group_name) values(1, 'user')
+
+	insert into roles(role_name, role_group_id) values('admin', (Select Id From role_groups where group_name = 'admin'))
+	insert into roles(role_name, role_group_id) values('teacher', (Select Id From role_groups where group_name = 'user'))
+	insert into roles(role_name, role_group_id) values('principal', (Select Id From role_groups where group_name = 'user'))
 	
 	commit TRANSACTION
 	PRINT 'Database created successfully!'
+
 end TRY
 
 begin CATCH

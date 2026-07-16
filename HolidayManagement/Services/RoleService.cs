@@ -5,7 +5,8 @@ using HolidayManagement.Services.Interfaces;
 
 namespace HolidayManagement.Services
 {
-    public class UserService(AppDbContext context) : ModelServiceBase<User>(context), IModelService<User>
+    public class RoleService(AppDbContext context) : ModelServiceBase<Role>(context), IModelService<Role>
     {
+
     }
 }

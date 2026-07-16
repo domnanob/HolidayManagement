@@ -21,7 +21,5 @@ namespace HolidayManagement.Models
         [Column("user_data_id")]
         public Guid DataId { get; set; }
 
-        [Column("role_id")]
-        public Guid RoleId { get; set; }
     }
 }

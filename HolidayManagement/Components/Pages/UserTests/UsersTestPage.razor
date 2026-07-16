@@ -1,10 +1,16 @@
 ﻿@page "/users"
 @rendermode InteractiveServer
 
+@using HolidayManagement.Helpers
+
 @inject Services.Interfaces.IModelService<User> userService
 @inject Services.Interfaces.IModelService<UserData> userDataService
+@inject Services.Interfaces.IModelService<UserInstitution> userInstitutionService
+@inject Services.Interfaces.IModelService<Center> centerService
+@inject Services.Interfaces.IModelService<Institution> institutionService
+@inject Services.Interfaces.IModelService<Role> roleService
 
-<h3>UsersTestPage</h3>  
+<h3>UsersTestPage</h3>
 
 @if (_users == null)
 {
@@ -88,24 +94,49 @@ else
             Email = "domnanob@gmail.com",
             Phone = "+36303627517"
         };
-        await userDataService.Create(ud);
-        await userService.Create(new Models.User()
+        Models.User user = new Models.User()
         {
+            Id = Guid.NewGuid(),
             Username = "Dummy",
-            Password = "Password",
-            DataId = ud.Id,
-            RoleId = Guid.NewGuid()
+            Password = new PasswordManager().Hash("Password"),
+            DataId = ud.Id
 
-        });
-        _users = await userService.GetAll();
+        };
+        Models.Center center = new Models.Center()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Vasvármegyei Szakképzési Centrum"
+        };
+        Models.Institution institution = new Models.Institution()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Nádasdy",
+            CenterID = center.Id
+        };
+        Models.UserInstitution userInstitution = new Models.UserInstitution()
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            InstitutionId = institution.Id,
+            RoleId = await roleService.GetAll().ContinueWith(t => t.Result.FirstOrDefault(x => x.Name == "teacher").Id)
+        };
+        await userDataService.Create(ud);
+        await userService.Create(user);
+        await centerService.Create(center);
+        await institutionService.Create(institution);
+
         StateHasChanged();
+        await userInstitutionService.Create(userInstitution);
+
+        StateHasChanged();
+        _users = await userService.GetAll();
     }
 
     public async void DeleteUser(Guid id)
     {
         await userDataService.Delete(_users.Single(x => x.Id == id).DataId);
         //await userService.Delete(id); //cascade miatt nem kell
-        
+
         _users = await userService.GetAll();
         StateHasChanged();
     }
