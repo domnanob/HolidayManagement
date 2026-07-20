@@ -1,7 +1,58 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+
+@inject Services.Interfaces.IModelService<User> UserService
+@inject Services.Interfaces.IModelService<UserData> UserDataService
+
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (user != null)
+{
+    <MudText Typo="Typo.h3" GutterBottom="true" Style="font-weight: 700; margin-bottom: 12px;">
+        Üdv @user.Username!
+    </MudText>
+    <button @onclick="HandleLogout" class="btn btn-outline-danger">Logout</button>
+}
 
-Welcome to your new app.
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    public User user { get; set; }
+    public UserData userData { get; set; }
+    public string? userId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authenticationstate = await authenticationStateTask;
+        userId = authenticationstate.User.Claims.First(x => x.Type == "ID").Value;
+        user = await UserService.Get(Guid.Parse(userId));
+        var userDataList = await UserDataService.GetAll();
+        userData = userDataList.FirstOrDefault(x => x.Id == user.DataId);
+    }
+    private async Task HandleLogout()
+    {
+        try
+        {
+            var result = await JS.InvokeAsync<LogoutResult>("logoutRequest");
+
+            if (result.Success)
+            {
+                Navigation.NavigateTo("/public/login", forceLoad: true);
+            }
+        }
+        catch (Exception)
+        {
+            // optional: show an error message, or just navigate anyway
+            Navigation.NavigateTo("/public/login", forceLoad: true);
+        }
+    }
+    public class LogoutResult
+    {
+        public bool Success { get; set; }
+    }
+}

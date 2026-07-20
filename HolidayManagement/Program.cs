@@ -3,7 +3,12 @@ using HolidayManagement.Database;
 using HolidayManagement.Models;
 using HolidayManagement.Services;
 using HolidayManagement.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
+using MudBlazor.Services;
+using System.Security.Claims;
 
 namespace HolidayManagement
 {
@@ -17,6 +22,8 @@ namespace HolidayManagement
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            builder.Services.AddMudServices();
+
             builder.Services.AddDbContext<AppDbContext>();
 
             builder.Services.AddScoped<IModelService<UserData>, UserDataService>();
@@ -27,6 +34,7 @@ namespace HolidayManagement
             builder.Services.AddScoped<IModelService<Role>, RoleService>();
             builder.Services.AddScoped<IModelService<RoleGroup>, RoleGroupService>();
 
+
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
                 options.Cookie.Name = "auth_token";
@@ -34,8 +42,11 @@ namespace HolidayManagement
                 options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
                 options.AccessDeniedPath = "/public/access-denied";
             });
+
             builder.Services.AddAuthorization();
             builder.Services.AddCascadingAuthenticationState();
+
+            builder.Services.AddControllers();
 
             var app = builder.Build();
 
@@ -58,6 +69,8 @@ namespace HolidayManagement
             app.MapStaticAssets();
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
+
+            app.MapControllers();
 
             app.Run();
         }

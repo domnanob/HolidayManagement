@@ -1,0 +1,246 @@
+@page "/public/login/"
+@layout Components.Layout.PublicLayout
+@rendermode InteractiveServer
+
+
+@using Microsoft.JSInterop
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using HolidayManagement.Helpers
+@using HolidayManagement.Models.Login
+@using Microsoft.AspNetCore.Http
+
+@inject Services.Interfaces.IModelService<User> userService
+@inject Services.Interfaces.IModelService<UserInstitution> userInstitutionService
+@inject Services.Interfaces.IModelService<Institution> institutionService
+@inject Services.Interfaces.IModelService<Role> roleService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+
+<PageTitle>Login - Holiday Management</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Style="height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0;">
+    <MudPaper Elevation="3" Class="pa-8" Style="width: 100%; border-radius: 16px; overflow: visible; position: relative;">
+        <!-- Header Section -->
+        <div style="text-align: center; margin-bottom: 32px;">
+            <MudText Typo="Typo.h3" GutterBottom="true" Style="font-weight: 700; margin-bottom: 12px;">
+                🔐 Holiday Management
+            </MudText>
+            <MudText Typo="Typo.body2" Color="Color.Default">
+                Manage your holidays efficiently
+            </MudText>
+        </div>
+
+        @if (!firstRenderComplete)
+        {
+
+            <MudText Typo="Typo.body2" Color="Color.Default" Style="text-align: center;">
+                <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" Class="mb-4" />
+            </MudText>
+        }
+        else
+        {
+
+            <!-- Error Message -->
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="mb-3 text-center alert alert-danger">
+                    <span class="text-danger">@errorMessage</span>
+                </div>
+            }
+
+            <!-- Login Form -->
+            <EditForm Model="@loginRequest" OnSubmit="HandleLogin" FormName="LoginForm">
+                <DataAnnotationsValidator />
+
+                <!-- Institution Selection -->
+                <MudSelect T="string" @bind-Value="loginRequest.InstitutionId" Label="Select your Institution" FullWidth="true" FitContent="true" Variant="Variant.Outlined" ShrinkLabel>
+                    @foreach (var institution in institutions)
+                    {
+                        <MudSelectItem Value="@institution.Id.ToString()">@institution.Name</MudSelectItem>
+                    }
+                </MudSelect>
+
+
+                <!-- Username Field -->
+                <MudTextField @bind-Value="loginRequest.Username"
+                              Label="Username"
+                              Placeholder="Enter your username"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              FullWidth="true"
+                              Class="mb-4"
+                              StartAdornment="@(new RenderFragment(b => { b.OpenComponent<MudIcon>(0); b.AddAttribute(1, "Icon", Icons.Material.Outlined.Person); b.CloseComponent(); }))"
+                              StartAdornmentColor="Color.Inherit">
+                </MudTextField>
+
+                <!-- Password Field with Toggle -->
+                <MudTextField @bind-Value="loginRequest.Password"
+                              Label="Password"
+                              Placeholder="Enter your password"
+                              InputType="@passwordInputType"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              FullWidth="true"
+                              Class="mb-4"
+                              StartAdornment="@(new RenderFragment(b => { b.OpenComponent<MudIcon>(0); b.AddAttribute(1, "Icon", Icons.Material.Outlined.Lock); b.CloseComponent(); }))"
+                              StartAdornmentColor="Color.Inherit"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@passwordIcon"
+                              OnAdornmentClick="TogglePasswordVisibility"
+                              AdornmentAriaLabel="Toggle password visibility">
+                </MudTextField>
+
+                <!-- Remember Me & Forgot Password -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <MudCheckBox T="bool" @bind-Checked="@rememberMe" Label="Remember me" Color="Color.Primary" Size="Size.Small" />
+                    <MudLink Href="#" Typo="Typo.body2" Color="Color.Primary">
+                        Forgot password?
+                    </MudLink>
+                </div>
+
+                <!-- Login Button -->
+                <MudButton ButtonType="ButtonType.Submit"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           Disabled="@isLoading"
+                           Class="mb-4">
+                    @if (isLoading)
+                    {
+                        <MudProgressCircular Class="me-2" Size="Size.Small" Indeterminate="true" />
+                        <span>Logging in...</span>
+                    }
+                    else
+                    {
+                        <span>Sign In</span>
+                    }
+                </MudButton>
+            </EditForm>
+
+        }
+
+        <!-- Sign Up Link -->
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4" />
+
+        <div style="text-align: center;">
+            <MudText Typo="Typo.body2" Color="Color.Default">
+                Don't have an account?
+                <MudLink Href="/register" Color="Color.Primary">
+                    Sign up here
+                </MudLink>
+            </MudText>
+        </div>
+
+        <!-- Footer -->
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-6" />
+        <MudText Typo="Typo.caption" Color="Color.Default" Style="text-align: center;">
+            &copy; 2026 Holiday Management System. All rights reserved.
+        </MudText>
+    </MudPaper>
+</MudContainer>
+
+@code {
+        [SupplyParameterFromForm]
+        private LoginUser loginRequest { get; set; } = new();
+
+    private List<User> users;
+    private List<Role> roles;
+    private List<UserInstitution> userInstitutions;
+    private List<Institution> institutions;
+
+    private string errorMessage;
+    private bool isLoading = false;
+    private bool rememberMe = false;
+    private bool showPassword = false;
+    private InputType passwordInputType = InputType.Password;
+    private string passwordIcon = Icons.Material.Filled.VisibilityOff;
+    private bool firstRenderComplete = false;
+
+    private string stringValue { get; set; }
+
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+        passwordInputType = showPassword ? InputType.Text : InputType.Password;
+        passwordIcon = showPassword ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff;
+    }
+
+    private async Task HandleLogin(EditContext context)
+    {
+
+        isLoading = true;
+        await Task.Delay(1000); // Simulate a delay for better UX
+        try
+        {
+            var result = await JS.InvokeAsync<LoginResult>(
+            "loginRequest",
+            loginRequest.Username,
+            loginRequest.Password,
+            loginRequest.InstitutionId);
+
+            if (result.Success)
+            {
+                Navigation.NavigateTo("/", forceLoad: true);
+            }
+            else
+            {
+                errorMessage = result.Message ?? "Invalid Username or Password";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "An error occurred while logging in, please try again.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            users = await userService.GetAll();
+            roles = await roleService.GetAll();
+            userInstitutions = await userInstitutionService.GetAll();
+            institutions = await institutionService.GetAll();
+
+            firstRenderComplete = true;
+        } catch (Exception ex)
+        {
+            errorMessage = "An error occurred while loading data. Please reload the page.";
+        }
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                var savedDarkMode = await JS.InvokeAsync<string>("localStorage.getItem", "darkMode");
+                if (!string.IsNullOrEmpty(savedDarkMode) && bool.TryParse(savedDarkMode, out bool darkMode))
+                {
+                    //isDarkMode = darkMode;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle error silently if localStorage is not available
+                System.Diagnostics.Debug.WriteLine($"Error loading dark mode preference: {ex.Message}");
+            }
+        }
+    }
+    class LoginResult
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+    }
+}

@@ -1,23 +1,119 @@
-﻿@inherits LayoutComponentBase
+@using MudBlazor
+@inherits LayoutComponentBase
+@inject IJSRuntime JS
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudThemeProvider @ref="@mudThemeProvider" IsDarkMode="@isDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<MudLayout>
+    <!-- AppBar (Top Navigation) -->
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" @onclick="@DrawerToggle" />
+        <MudSpacer />
+        <MudText Typo="Typo.h6" Style="font-weight: 600;">Holiday Management System</MudText>
+        <MudSpacer />
+        <MudIconButton 
+            Icon="@(isDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" 
+            Color="Color.Inherit"
+            @onclick="ToggleDarkMode"
+            Title="@(isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode")">
+        </MudIconButton>
+        <MudMenu Icon="@Icons.Material.Filled.AccountCircle" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+            <MudMenuItem>Profile</MudMenuItem>
+            <MudMenuItem>Settings</MudMenuItem>
+            <MudDivider />
+            <MudMenuItem>Logout</MudMenuItem>
+        </MudMenu>
+    </MudAppBar>
 
-        <article class="content px-4">
+    <!-- Drawer (Side Navigation) -->
+    <MudDrawer @bind-Open="@drawerOpen" Elevation="1">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6" Style="font-weight: 600;">Menu</MudText>
+        </MudDrawerHeader>
+
+        <MudNavLink Icon="@Icons.Material.Filled.Dashboard" Href="/">
+            Dashboard
+        </MudNavLink>
+
+        <MudNavLink Icon="@Icons.Material.Filled.DateRange" Href="/holidays">
+            Holidays
+        </MudNavLink>
+
+        <MudNavLink Icon="@Icons.Material.Filled.People" Href="/users">
+            Users
+        </MudNavLink>
+
+        <MudNavLink Icon="@Icons.Material.Filled.Business" Href="/institutions">
+            Institutions
+        </MudNavLink>
+
+        <MudDivider Class="my-2" />
+
+        <MudNavLink Icon="@Icons.Material.Filled.Settings" Href="/settings">
+            Settings
+        </MudNavLink>
+
+        <MudNavLink Icon="@Icons.Material.Filled.Help" Href="/help">
+            Help
+        </MudNavLink>
+    </MudDrawer>
+
+    <!-- Main Content -->
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-6">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 <div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+    <MudAlert Severity="Severity.Error" Class="my-4">
+        An unhandled error has occurred.
+        <a href="." class="mud-link">Reload</a>
+    </MudAlert>
 </div>
+
+@code {
+    private MudThemeProvider? mudThemeProvider;
+    private bool isDarkMode = false;
+    private bool drawerOpen = true;
+
+    private void DrawerToggle()
+    {
+        drawerOpen = !drawerOpen;
+    }
+
+    private async Task ToggleDarkMode()
+    {
+        isDarkMode = !isDarkMode;
+        try
+        {
+            await JS.InvokeVoidAsync("localStorage.setItem", "darkMode", isDarkMode.ToString());
+        }
+        catch
+        {
+            // localStorage not available
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Load dark mode preference from localStorage
+            try
+            {
+                var savedDarkMode = await JS.InvokeAsync<string>("localStorage.getItem", "darkMode");
+                isDarkMode = savedDarkMode == "true";
+                StateHasChanged();
+            }
+            catch
+            {
+                isDarkMode = false;
+            }
+        }
+    }
+}

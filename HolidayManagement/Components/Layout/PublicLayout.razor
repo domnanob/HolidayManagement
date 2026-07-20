@@ -1,0 +1,30 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+
+@* Required *@
+<MudThemeProvider IsDarkMode="@isDarkMode" />
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+
+@Body
+
+
+@code {
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    public bool isDarkMode { get; set; } = true;
+
+    protected override void OnParametersSet()
+    {
+        if (HttpContext is null)
+        {
+            //Navigation.Refresh(forceReload: true);
+        }
+    }
+}
