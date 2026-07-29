@@ -1,0 +1,274 @@
+﻿/* =================================================================
+   app-theme.css — shared design tokens and reusable classes.
+   Link this once, globally, in App.razor / _Host.cshtml <head>:
+     <link href="css/app-theme.css" rel="stylesheet" />
+
+   This file is NOT scoped/isolated, so plain selectors and :root
+   work normally here (unlike inside a .razor.css file).
+   ================================================================= */
+
+:root {
+    --kr-teal: #0EA99D;
+    --kr-teal-dark: #0B6E66;
+    --kr-teal-darker: #063F3B;
+    --kr-teal-tint: #E4F5F3;
+    --kr-orange: #F5A623;
+    --kr-orange-tint: #FDF1DC;
+    --kr-amber: #E0A100;
+    --kr-red: #E0533D;
+    --kr-red-tint: #FBE7E3;
+    --kr-green: #1F9D63;
+    --kr-green-tint: #E4F5EC;
+    --kr-ink: #1B2B29;
+    --kr-muted: #64807C;
+    --kr-border: #E1EEEC;
+    --kr-bg: #F6FAF9;
+}
+
+body {
+    background: var(--kr-bg);
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--kr-ink);
+}
+
+/* ---------- Text utilities ---------- */
+.text-muted {
+    color: var(--kr-muted) !important;
+}
+
+.text-ink {
+    color: var(--kr-ink) !important;
+}
+
+.icon-teal {
+    color: var(--kr-teal) !important;
+}
+
+.icon-muted {
+    color: var(--kr-muted) !important;
+}
+
+.link-teal,
+.link-teal a {
+    color: var(--kr-teal) !important;
+}
+
+/* ---------- Surfaces ---------- */
+.card-surface {
+    background: #fff;
+    border: 1px solid var(--kr-border);
+    border-radius: 14px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.panel-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--kr-ink);
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+    background-color: var(--kr-teal) !important;
+    color: #fff !important;
+    text-transform: none;
+    box-shadow: none !important;
+    border-radius: 10px !important;
+}
+
+    .btn-primary:hover {
+        background-color: var(--kr-teal-dark) !important;
+    }
+
+    .btn-primary.mud-disabled {
+        background-color: var(--kr-teal) !important;
+        opacity: .6;
+    }
+
+/* ---------- Avatars & badges ---------- */
+.avatar-teal {
+    background-color: var(--kr-teal) !important;
+    color: #fff !important;
+    font-weight: 600;
+}
+
+.badge-tint {
+    background: var(--kr-teal-tint) !important;
+    color: var(--kr-teal-dark) !important;
+    font-weight: 600;
+}
+
+.icon-badge {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: var(--kr-teal-tint);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .icon-badge .mud-icon-root {
+        color: var(--kr-teal);
+        font-size: 30px;
+    }
+
+/* A tinted rounded box for a single big number, e.g. a countdown */
+.metric-badge {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--kr-teal);
+    background: var(--kr-teal-tint);
+    border-radius: 12px;
+    padding: 10px 20px;
+    line-height: 1;
+}
+
+/* ---------- Status chips ---------- */
+.chip-status {
+    font-weight: 600;
+    font-size: .78rem;
+}
+
+.chip-approved {
+    background: var(--kr-green-tint) !important;
+    color: var(--kr-green) !important;
+}
+
+.chip-pending {
+    background: var(--kr-orange-tint) !important;
+    color: #B97A00 !important;
+}
+
+.chip-rejected {
+    background: var(--kr-red-tint) !important;
+    color: var(--kr-red) !important;
+}
+
+/* ---------- Soft inline alert (errors, warnings) ---------- */
+.alert-soft {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: .88rem;
+}
+
+.alert-soft-error {
+    background: var(--kr-red-tint);
+    color: var(--kr-red);
+}
+
+/* ---------- Stat cards (icon + label + big value, optional bar) ---------- */
+.stat-card {
+    padding: 26px 26px 24px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid var(--kr-border);
+    border-left: 4px solid var(--kr-teal);
+    height: 100%;
+}
+
+    .stat-card.accent-orange {
+        border-left-color: var(--kr-orange);
+    }
+
+    .stat-card.accent-amber {
+        border-left-color: var(--kr-amber);
+    }
+
+    .stat-card.accent-dark {
+        border-left-color: var(--kr-teal-dark);
+    }
+
+.stat-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.stat-icon {
+    font-size: 24px;
+    color: var(--kr-teal);
+}
+
+.accent-orange .stat-icon {
+    color: var(--kr-orange);
+}
+
+.accent-amber .stat-icon {
+    color: var(--kr-amber);
+}
+
+.accent-dark .stat-icon {
+    color: var(--kr-teal-dark);
+}
+
+.stat-label {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--kr-muted);
+}
+
+.stat-value {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--kr-ink);
+    line-height: 1.1;
+    margin-bottom: 12px;
+}
+
+.stat-value-sub {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--kr-muted);
+    margin-left: 4px;
+}
+
+.stat-bar {
+    height: 7px !important;
+}
+
+.teal-bar .mud-progress-linear-bar {
+    background-color: var(--kr-teal) !important;
+}
+
+/* ---------- Re-skin MudBlazor's "Primary" color to teal, site-wide ----------
+   No custom MudTheme is used, so a handful of built-in components still
+   render with MudBlazor's default indigo "Primary" swatch unless we
+   override the specific internal classes they emit. Applying this
+   globally means any page can use Color="Color.Primary" and get teal
+   for free, instead of re-declaring these rules per page. */
+.mud-checkbox-true .mud-icon-root,
+.mud-checkbox-true.mud-primary-text {
+    color: var(--kr-teal) !important;
+}
+
+.mud-progress-circular.mud-primary .mud-progress-circular-circle {
+    stroke: var(--kr-teal) !important;
+}
+
+.mud-input-outlined.mud-shrink.mud-input-focused .mud-input-outlined-border,
+.mud-input-outlined.mud-input-focused .mud-input-outlined-border {
+    border-color: var(--kr-teal) !important;
+}
+
+.mud-input-outlined.mud-input-focused .mud-input-label {
+    color: var(--kr-teal) !important;
+}
+
+.mud-input-outlined:hover .mud-input-outlined-border {
+    border-color: var(--kr-teal) !important;
+}
+
+.mud-divider {
+    border-color: var(--kr-border) !important;
+}

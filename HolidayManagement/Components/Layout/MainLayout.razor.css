@@ -1,81 +1,93 @@
-.page {
-    position: relative;
-    display: flex;
-    flex-direction: column;
+/* MainLayout — layout-specific rules only. Colors/tokens come from
+   wwwroot/css/app-theme.css (linked globally); this file just handles
+   the chrome that's unique to the app bar / drawer structure. */
+
+::deep .app-bar {
+    background: #FFFFFF !important;
+    color: var(--kr-ink) !important;
+    border-bottom: 1px solid var(--kr-border);
+    height: 4rem;
 }
 
-main {
-    flex: 1;
+::deep .appbar-icon {
+    color: var(--kr-ink) !important;
 }
 
-.sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+::deep .brand-text {
+    font-weight: 700;
+    color: var(--kr-ink);
 }
 
-.top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
+/* ---------- Drawer ---------- */
+::deep .app-drawer {
+    width: 270px;
 }
 
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        text-decoration: none;
+    ::deep .app-drawer .mud-drawer-content {
+        background: linear-gradient(180deg, var(--kr-teal-dark) 0%, var(--kr-teal-darker) 100%);
     }
 
-    .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
-
-    .top-row ::deep a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-@media (max-width: 640.98px) {
-    .top-row {
-        justify-content: space-between;
-    }
-
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        margin-left: 0;
-    }
+::deep .drawer-header {
+    padding: 1.5rem 1.25rem 1rem;
 }
 
-@media (min-width: 641px) {
-    .page {
-        flex-direction: row;
-    }
-
-    .sidebar {
-        width: 250px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
-    }
-
-    .top-row {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-
-    .top-row.auth ::deep a:first-child {
-        flex: 1;
-        text-align: right;
-        width: 0;
-    }
-
-    .top-row, article {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
-    }
+::deep .drawer-brand-icon {
+    color: #fff;
 }
 
+::deep .drawer-brand-text {
+    color: #fff;
+    font-weight: 600;
+}
+
+::deep .drawer-divider {
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+::deep .drawer-nav {
+    padding: 0.5rem 0.75rem;
+}
+
+    ::deep .drawer-nav .mud-nav-link {
+        color: rgba(255, 255, 255, 0.78);
+        border-radius: 10px;
+        margin: 3px 0;
+        padding: 0.65rem 0.9rem;
+        font-size: 0.92rem;
+        font-weight: 500;
+        transition: background-color .15s ease, color .15s ease;
+    }
+
+        ::deep .drawer-nav .mud-nav-link .mud-icon-root {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        ::deep .drawer-nav .mud-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        ::deep .drawer-nav .mud-nav-link.active,
+        ::deep .drawer-nav .mud-nav-link-active,
+        ::deep .drawer-nav .mud-nav-link[aria-current="page"] {
+            background-color: var(--kr-teal);
+            color: #fff;
+            font-weight: 600;
+        }
+
+            ::deep .drawer-nav .mud-nav-link.active .mud-icon-root,
+            ::deep .drawer-nav .mud-nav-link-active .mud-icon-root,
+            ::deep .drawer-nav .mud-nav-link[aria-current="page"] .mud-icon-root {
+                color: #fff;
+            }
+
+/* ---------- Main content ---------- */
+::deep .app-main {
+    background: var(--kr-bg);
+    min-height: 100vh;
+}
+
+/* ---------- Error banner (unchanged) ---------- */
 #blazor-error-ui {
     color-scheme: light only;
     background: lightyellow;

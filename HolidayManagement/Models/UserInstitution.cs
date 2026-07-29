@@ -18,5 +18,9 @@ namespace HolidayManagement.Models
 
         [Column("role_id")]
         public Guid RoleId { get; set; }
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; }
+        [Column("active")]
+        public byte Active { get; set; }
     }
 }

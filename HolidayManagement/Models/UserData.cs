@@ -21,6 +21,8 @@ namespace HolidayManagement.Models
 
         [Column("children")]
         public int Children { get; set; } = 0;
+        [Column("fullname")]
+        public string FullName { get; set; }
 
     }
 }

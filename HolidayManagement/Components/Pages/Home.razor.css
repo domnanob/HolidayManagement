@@ -1,0 +1,191 @@
+/* Dashboard — page-specific composite widgets only. Colors/tokens and
+   reusable atoms (card-surface, stat-card, chip-status, avatar-teal,
+   badge-tint, metric-badge, etc.) come from wwwroot/css/app-theme.css
+   (linked globally). */
+
+::deep .dash {
+    padding: 36px;
+}
+
+/* ---------- Profile panel ---------- */
+::deep .profile-panel {
+    padding: 32px 34px;
+}
+
+::deep .profile-avatar {
+    width: 72px;
+    height: 72px;
+    font-size: 1.6rem;
+}
+
+::deep .profile-main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+::deep .role-chip {
+    font-size: .78rem;
+    margin-top: 6px;
+}
+
+::deep .profile-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+}
+
+::deep .profile-stat {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 180px;
+}
+
+::deep .breakdown-value {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--kr-ink);
+    margin-top: 2px;
+}
+
+/* ---------- Leave balance (segmented bar) ---------- */
+::deep .balance-bar {
+    display: flex;
+    width: 100%;
+    height: 14px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--kr-border);
+}
+
+::deep .balance-seg {
+    height: 100%;
+}
+
+::deep .seg-used {
+    background: var(--kr-teal-dark);
+}
+
+::deep .seg-pending {
+    background: var(--kr-orange);
+}
+
+::deep .seg-remaining {
+    background: var(--kr-teal);
+}
+
+::deep .balance-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-top: 14px;
+    font-size: .88rem;
+    color: var(--kr-muted);
+}
+
+::deep .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+::deep .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+::deep .dot-used {
+    background: var(--kr-teal-dark);
+}
+
+::deep .dot-pending {
+    background: var(--kr-orange);
+}
+
+::deep .dot-remaining {
+    background: var(--kr-teal);
+}
+
+::deep .balance-breakdown {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+::deep .breakdown-item {
+    min-width: 140px;
+}
+
+/* ---------- Recent requests ---------- */
+::deep .request-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--kr-border);
+}
+
+    ::deep .request-row:last-child {
+        border-bottom: none;
+    }
+
+::deep .request-dates {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+::deep .request-icon {
+    color: var(--kr-teal);
+    font-size: 22px;
+}
+
+/* ---------- Next leave ---------- */
+::deep .next-leave {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* ---------- Upcoming leave list ---------- */
+::deep .upcoming-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--kr-border);
+}
+
+    ::deep .upcoming-row:last-child {
+        border-bottom: none;
+    }
+
+::deep .upcoming-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    background: var(--kr-teal-tint);
+    border-radius: 10px;
+    color: var(--kr-teal-dark);
+}
+
+::deep .upcoming-day {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+::deep .upcoming-month {
+    font-size: .68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}

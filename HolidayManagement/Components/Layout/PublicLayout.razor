@@ -18,13 +18,6 @@
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
 
-    public bool isDarkMode { get; set; } = true;
+    public bool isDarkMode { get; set; } = false;
 
-    protected override void OnParametersSet()
-    {
-        if (HttpContext is null)
-        {
-            //Navigation.Refresh(forceReload: true);
-        }
-    }
 }

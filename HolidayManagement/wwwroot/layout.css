@@ -1,0 +1,138 @@
+﻿/* ---------------------------------------------------------------
+   MainLayout — e-KRÉTA-inspired teal palette, no custom MudTheme.
+   Uses  because MudAppBar / MudDrawer / MudNavMenu render
+   their own internal markup that lives outside this component's
+   normal CSS-isolation scope.
+   --------------------------------------------------------------- */
+
+:root {
+    --kr-teal: #0EA99D;
+    --kr-teal-dark: #0B6E66;
+    --kr-teal-darker: #063F3B;
+    --kr-teal-tint: #E4F5F3;
+    --kr-ink: #1B2B29;
+    --kr-muted: #64807C;
+    --kr-border: #E1EEEC;
+    --kr-bg: #F6FAF9;
+}
+
+/* ---------- App bar ---------- */
+ .app-bar,
+ .mud-appbar.app-bar {
+    background: #FFFFFF !important;
+    color: var(--kr-ink) !important;
+    border-bottom: 1px solid var(--kr-border);
+    height: 4rem;
+}
+
+ .appbar-icon {
+    color: var(--kr-ink) !important;
+}
+
+ .brand-icon {
+    color: var(--kr-teal);
+    font-size: 1.6rem;
+}
+
+ .brand-text {
+    font-weight: 700;
+    color: var(--kr-ink) !important;
+}
+
+ .appbar-avatar {
+    background-color: var(--kr-teal) !important;
+    color: #fff !important;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ---------- Drawer ---------- */
+ .app-drawer {
+    width: 270px;
+}
+
+     .app-drawer .mud-drawer-content {
+        background: linear-gradient(180deg, var(--kr-teal-dark) 0%, var(--kr-teal-darker) 100%);
+    }
+
+ .drawer-header {
+    padding: 1.5rem 1.25rem 1rem;
+}
+
+ .drawer-brand-icon {
+    color: #fff !important;
+}
+
+ .drawer-brand-text {
+    color: #fff !important;
+    font-weight: 600;
+}
+
+ .drawer-divider {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+ .drawer-nav {
+    padding: 0.5rem 0.75rem;
+}
+
+     .drawer-nav .mud-nav-link {
+        color: rgba(255, 255, 255, 0.78) !important;
+        border-radius: 10px;
+        margin: 3px 0;
+        padding: 0.65rem 0.9rem;
+        font-size: 0.92rem;
+        font-weight: 500;
+        transition: background-color .15s ease, color .15s ease;
+    }
+
+         .drawer-nav .mud-nav-link .mud-icon-root {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+         .drawer-nav .mud-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.08) !important;
+            color: #fff !important;
+        }
+
+         .drawer-nav .mud-nav-link.active,
+         .drawer-nav .mud-nav-link-active,
+         .drawer-nav .mud-nav-link[aria-current="page"] {
+            background-color: var(--kr-teal);
+            color: #fff !important;
+            font-weight: 600;
+        }
+
+             .drawer-nav .mud-nav-link.active .mud-icon-root,
+             .drawer-nav .mud-nav-link-active .mud-icon-root,
+             .drawer-nav .mud-nav-link[aria-current="page"] .mud-icon-root {
+                color: #fff !important;
+            }
+
+/* ---------- Main content ---------- */
+ .app-main {
+    background: var(--kr-bg);
+    min-height: 100vh;
+}
+
+/* ---------- Error banner (unchanged) ---------- */
+#blazor-error-ui {
+    color-scheme: light only;
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }

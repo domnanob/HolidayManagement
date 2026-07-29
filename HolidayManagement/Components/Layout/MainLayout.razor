@@ -6,72 +6,89 @@
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
+<div>
+    <MudLayout Class="app-layout">
+        <!-- AppBar (Top Navigation) -->
+        <MudAppBar Elevation="0" Color="Color.Transparent" Class="app-bar">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Class="appbar-icon" Edge="Edge.Start" @onclick="@DrawerToggle" />
 
-<MudLayout>
-    <!-- AppBar (Top Navigation) -->
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" @onclick="@DrawerToggle" />
-        <MudSpacer />
-        <MudText Typo="Typo.h6" Style="font-weight: 600;">Holiday Management System</MudText>
-        <MudSpacer />
-        <MudIconButton 
-            Icon="@(isDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" 
-            Color="Color.Inherit"
-            @onclick="ToggleDarkMode"
-            Title="@(isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode")">
-        </MudIconButton>
-        <MudMenu Icon="@Icons.Material.Filled.AccountCircle" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
-            <MudMenuItem>Profile</MudMenuItem>
-            <MudMenuItem>Settings</MudMenuItem>
-            <MudDivider />
-            <MudMenuItem>Logout</MudMenuItem>
-        </MudMenu>
-    </MudAppBar>
+            <div class="d-flex align-center gap-2 ml-2">
+                <MudIcon Icon="@Icons.Material.Filled.BeachAccess" Class="icon-teal" />
+                <MudText Typo="Typo.h6" Class="brand-text">Holiday Management</MudText>
+            </div>
 
-    <!-- Drawer (Side Navigation) -->
-    <MudDrawer @bind-Open="@drawerOpen" Elevation="1">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6" Style="font-weight: 600;">Menu</MudText>
-        </MudDrawerHeader>
+            <MudSpacer />
 
-        <MudNavLink Icon="@Icons.Material.Filled.Dashboard" Href="/">
-            Dashboard
-        </MudNavLink>
+            <MudIconButton Icon="@(isDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
+                           Class="appbar-icon"
+                           @onclick="ToggleDarkMode"
+                           Title="@(isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode")">
+            </MudIconButton>
 
-        <MudNavLink Icon="@Icons.Material.Filled.DateRange" Href="/holidays">
-            Holidays
-        </MudNavLink>
+            <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight" Class="ml-2">
+                <ActivatorContent>
+                    <MudAvatar Class="avatar-teal">U</MudAvatar>
+                </ActivatorContent>
+                <ChildContent>
+                    <MudMenuItem Icon="@Icons.Material.Filled.Person">Profile</MudMenuItem>
+                    <MudMenuItem Icon="@Icons.Material.Filled.Settings">Settings</MudMenuItem>
+                    <MudDivider />
+                    <MudMenuItem Icon="@Icons.Material.Filled.Logout" Color="Color.Error">Log out</MudMenuItem>
+                </ChildContent>
+            </MudMenu>
+        </MudAppBar>
 
-        <MudNavLink Icon="@Icons.Material.Filled.People" Href="/users">
-            Users
-        </MudNavLink>
+        <!-- Drawer (Side Navigation) -->
+        <MudDrawer @bind-Open="@drawerOpen" Elevation="0" Color="Color.Transparent" Class="app-drawer">
+            <MudDrawerHeader Class="drawer-header">
+                <div class="d-flex align-center gap-2">
+                    <MudIcon Icon="@Icons.Material.Filled.BeachAccess" Class="drawer-brand-icon" />
+                    <MudText Typo="Typo.subtitle1" Class="drawer-brand-text">Menu</MudText>
+                </div>
+            </MudDrawerHeader>
 
-        <MudNavLink Icon="@Icons.Material.Filled.Business" Href="/institutions">
-            Institutions
-        </MudNavLink>
+            <MudNavMenu Class="drawer-nav">
+                <MudNavLink Icon="@Icons.Material.Filled.Dashboard" Href="/" Match="NavLinkMatch.All">
+                    Kezdőlap
+                </MudNavLink>
 
-        <MudDivider Class="my-2" />
+                <MudNavLink Icon="@Icons.Material.Filled.DateRange" Href="/holidays">
+                    Szabadságok
+                </MudNavLink>
 
-        <MudNavLink Icon="@Icons.Material.Filled.Settings" Href="/settings">
-            Settings
-        </MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.People" Href="/users">
+                    Felhasználók
+                </MudNavLink>
 
-        <MudNavLink Icon="@Icons.Material.Filled.Help" Href="/help">
-            Help
-        </MudNavLink>
-    </MudDrawer>
+                <MudNavLink Icon="@Icons.Material.Filled.Business" Href="/institutions">
+                    Intézmények
+                </MudNavLink>
 
-    <!-- Main Content -->
-    <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="my-6">
+                <MudDivider Class="drawer-divider my-3" />
+
+                <MudNavLink Icon="@Icons.Material.Filled.Settings" Href="/settings">
+                    Beállítások
+                </MudNavLink>
+
+                <MudNavLink Icon="@Icons.Material.Filled.Help" Href="/help">
+                    Súgó
+                </MudNavLink>
+                <MudDivider Class="drawer-divider my-3" />
+                <MudNavLink Icon="@Icons.Material.Filled.Logout" Href="/logout">
+                    Kijelentkezés
+                </MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
+
+        <!-- Main Content -->
+        <MudMainContent Class="app-main">
             @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
-
+        </MudMainContent>
+    </MudLayout>
+</div>
 <div id="blazor-error-ui" data-nosnippet>
     <MudAlert Severity="Severity.Error" Class="my-4">
-        An unhandled error has occurred.
+        Valami hiba történt a webalkalmazásban. Kérjük, próbálja újra betölteni az oldalt. Ha a probléma továbbra is fennáll, kérjük, értesítse az alkalmazás fejlesztőit.
         <a href="." class="mud-link">Reload</a>
     </MudAlert>
 </div>

@@ -30,12 +30,15 @@ namespace HolidayManagement.Controllers
                 return Ok(new { success = false, message = "Invalid Username or Password" });
             }
 
-            var role = userInstitutions.FirstOrDefault(x => x.UserId == u.Id && x.InstitutionId == Guid.Parse(institutionId)).RoleId;
+            var role = userInstitutions.First(x => x.UserId == u.Id && x.InstitutionId == Guid.Parse(institutionId)).RoleId;
+            //ha nincs szerződés
             var claims = new List<Claim>
                 {
                     new Claim("ID", u.Id.ToString()),
                     new Claim(ClaimTypes.Name, u.Username),
-                    new Claim(ClaimTypes.Role, roles.Single(x => x.Id == role).Name)
+                    new Claim(ClaimTypes.Role, roles.Single(x => x.Id == role).Name),
+                    new Claim("InstitutionId", institutionId),
+                    new Claim("RoleId", role.ToString())
                 };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);

@@ -1,0 +1,304 @@
+﻿@page "/dashboard"
+@rendermode InteractiveServer
+
+<PageTitle>Dashboard</PageTitle>
+
+<div class="dash">
+
+    <!-- Profile panel -->
+    <MudPaper Class="panel profile-panel mb-5" Elevation="0">
+        <div class="profile-main">
+            <MudAvatar Class="profile-avatar" Style="width:72px;height:72px;font-size:1.6rem;">@_profile.Initials</MudAvatar>
+            <div>
+                <MudText Typo="Typo.h5" Class="dash-title">@_profile.Name</MudText>
+                <MudChip T="string" Size="Size.Medium" Class="role-chip">@_profile.Role</MudChip>
+            </div>
+            <MudSpacer />
+            <MudButton Variant="Variant.Filled" Class="btn-primary" Size="Size.Large" StartIcon="@Icons.Material.Filled.Add">
+                Request leave
+            </MudButton>
+        </div>
+
+        <MudDivider Class="my-4" />
+
+        <div class="profile-stats">
+            <div class="profile-stat">
+                <MudIcon Icon="@Icons.Material.Filled.Apartment" Class="info-icon" />
+                <div>
+                    <MudText Typo="Typo.caption" Class="dash-muted">Institution</MudText>
+                    <MudText Typo="Typo.body1" Class="breakdown-value">@_profile.Institution</MudText>
+                </div>
+            </div>
+            <div class="profile-stat">
+                <MudIcon Icon="@Icons.Material.Filled.Badge" Class="info-icon" />
+                <div>
+                    <MudText Typo="Typo.caption" Class="dash-muted">Employee ID</MudText>
+                    <MudText Typo="Typo.body1" Class="breakdown-value">@_profile.EmployeeId</MudText>
+                </div>
+            </div>
+            <div class="profile-stat">
+                <MudIcon Icon="@Icons.Material.Filled.MailOutline" Class="info-icon" />
+                <div>
+                    <MudText Typo="Typo.caption" Class="dash-muted">Email</MudText>
+                    <MudText Typo="Typo.body1" Class="breakdown-value">@_profile.Email</MudText>
+                </div>
+            </div>
+            <div class="profile-stat">
+                <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Class="info-icon" />
+                <div>
+                    <MudText Typo="Typo.caption" Class="dash-muted">Joined</MudText>
+                    <MudText Typo="Typo.body1" Class="breakdown-value">@_profile.JoinedYear</MudText>
+                </div>
+            </div>
+            <div class="profile-stat">
+                <MudIcon Icon="@Icons.Material.Filled.Today" Class="info-icon" />
+                <div>
+                    <MudText Typo="Typo.caption" Class="dash-muted">Today</MudText>
+                    <MudText Typo="Typo.body1" Class="breakdown-value">@_today.ToString("MMMM d, yyyy")</MudText>
+                </div>
+            </div>
+        </div>
+    </MudPaper>
+
+    <!-- Stat cards -->
+    <MudGrid Class="mt-1 mb-5" Spacing="4">
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="stat-card accent-teal" Elevation="0">
+                <div class="stat-top">
+                    <MudIcon Icon="@Icons.Material.Filled.BeachAccess" Class="stat-icon" />
+                    <span class="stat-label">Remaining days</span>
+                </div>
+                <div class="stat-value">@_balance.Remaining<span class="stat-value-sub">/ @_balance.Total</span></div>
+                <MudProgressLinear Value="@_balance.RemainingPercent" Class="stat-bar teal-bar" Rounded="true" Size="Size.Small" />
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="stat-card accent-orange" Elevation="0">
+                <div class="stat-top">
+                    <MudIcon Icon="@Icons.Material.Filled.EventAvailable" Class="stat-icon" />
+                    <span class="stat-label">Used this year</span>
+                </div>
+                <div class="stat-value">@_balance.Used<span class="stat-value-sub">days</span></div>
+                <MudText Typo="Typo.caption" Class="dash-muted">@_balance.SummerBlockDays days in the summer block</MudText>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="stat-card accent-amber" Elevation="0">
+                <div class="stat-top">
+                    <MudIcon Icon="@Icons.Material.Filled.HourglassTop" Class="stat-icon" />
+                    <span class="stat-label">Pending requests</span>
+                </div>
+                <div class="stat-value">@_pendingCount</div>
+                <MudText Typo="Typo.caption" Class="dash-muted">awaiting approval</MudText>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="stat-card accent-dark" Elevation="0">
+                <div class="stat-top">
+                    <MudIcon Icon="@Icons.Material.Filled.School" Class="stat-icon" />
+                    <span class="stat-label">School year progress</span>
+                </div>
+                <div class="stat-value">@_schoolYear.PercentElapsed<span class="stat-value-sub">%</span></div>
+                <MudText Typo="Typo.caption" Class="dash-muted">Day @_schoolYear.DayNumber of @_schoolYear.TotalDays · @_schoolYear.DaysUntilSummer days to summer break</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid Spacing="4">
+        <!-- Left column -->
+        <MudItem xs="12" md="8">
+
+            <MudPaper Class="panel mb-4" Elevation="0">
+                <div class="panel-header">
+                    <MudText Typo="Typo.subtitle1" Class="panel-title">Leave balance</MudText>
+                    <MudText Typo="Typo.caption" Class="dash-muted">School year @_schoolYear.Label</MudText>
+                </div>
+
+                <div class="balance-bar">
+                    <div class="balance-seg seg-used" style="width:@(_balance.UsedPercent)%" title="Used"></div>
+                    <div class="balance-seg seg-pending" style="width:@(_balance.PendingPercent)%" title="Pending"></div>
+                    <div class="balance-seg seg-remaining" style="width:@(_balance.RemainingPercent)%" title="Remaining"></div>
+                </div>
+
+                <div class="balance-legend">
+                    <div class="legend-item"><span class="dot dot-used"></span>Used · @_balance.Used days</div>
+                    <div class="legend-item"><span class="dot dot-pending"></span>Pending · @_balance.Pending days</div>
+                    <div class="legend-item"><span class="dot dot-remaining"></span>Remaining · @_balance.Remaining days</div>
+                </div>
+
+                <MudDivider Class="my-3" />
+
+                <div class="balance-breakdown">
+                    <div class="breakdown-item">
+                        <MudText Typo="Typo.caption" Class="dash-muted">Base leave</MudText>
+                        <MudText Typo="Typo.body1" Class="breakdown-value">@_balance.BaseDays days</MudText>
+                    </div>
+                    <div class="breakdown-item">
+                        <MudText Typo="Typo.caption" Class="dash-muted">Extra (pótszabadság)</MudText>
+                        <MudText Typo="Typo.body1" Class="breakdown-value">@_balance.ExtraDays days</MudText>
+                    </div>
+                    <div class="breakdown-item">
+                        <MudText Typo="Typo.caption" Class="dash-muted">Total entitlement</MudText>
+                        <MudText Typo="Typo.body1" Class="breakdown-value">@_balance.Total days</MudText>
+                    </div>
+                </div>
+            </MudPaper>
+
+            <MudPaper Class="panel" Elevation="0">
+                <div class="panel-header">
+                    <MudText Typo="Typo.subtitle1" Class="panel-title">Recent requests</MudText>
+                    <MudButton Variant="Variant.Text" Size="Size.Small" Class="link-teal">View all</MudButton>
+                </div>
+
+                @foreach (var r in _requests)
+                {
+                    <div class="request-row">
+                        <div class="request-dates">
+                            <MudIcon Icon="@Icons.Material.Filled.DateRange" Class="request-icon" />
+                            <div>
+                                <MudText Typo="Typo.body2">@r.Start.ToString("MMM d") – @r.End.ToString("MMM d, yyyy")</MudText>
+                                <MudText Typo="Typo.caption" Class="dash-muted">@r.Days days · requested @r.RequestedOn.ToString("MMM d")</MudText>
+                            </div>
+                        </div>
+                        <MudChip T="string" Size="Size.Small" Class="@StatusChipClass(r.Status)">@r.Status</MudChip>
+                    </div>
+                }
+            </MudPaper>
+
+        </MudItem>
+
+        <!-- Right column -->
+        <MudItem xs="12" md="4">
+
+            <MudPaper Class="panel mb-4" Elevation="0">
+                <MudText Typo="Typo.subtitle1" Class="panel-title mb-3">Next leave</MudText>
+                @if (_nextLeave is not null)
+                {
+                    <div class="next-leave">
+                        <div class="next-leave-days">@_nextLeave.DaysUntil</div>
+                        <div>
+                            <MudText Typo="Typo.body1">days until leave</MudText>
+                            <MudText Typo="Typo.body2" Class="dash-muted">@_nextLeave.Start.ToString("MMM d")–@_nextLeave.End.ToString("MMM d") · @_nextLeave.Days days</MudText>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <MudText Typo="Typo.body2" Class="dash-muted">No upcoming approved leave.</MudText>
+                }
+            </MudPaper>
+
+            <MudPaper Class="panel" Elevation="0">
+                <div class="panel-header">
+                    <MudText Typo="Typo.subtitle1" Class="panel-title">Upcoming leave</MudText>
+                    <MudButton Variant="Variant.Text" Size="Size.Small" Class="link-teal">Calendar</MudButton>
+                </div>
+                @foreach (var u in _upcomingLeave)
+                {
+                    <div class="upcoming-row">
+                        <div class="upcoming-date">
+                            <span class="upcoming-day">@u.Start.Day</span>
+                            <span class="upcoming-month">@u.Start.ToString("MMM")</span>
+                        </div>
+                        <div>
+                            <MudText Typo="Typo.body1">@u.Start.ToString("MMM d") – @u.End.ToString("MMM d")</MudText>
+                            <MudText Typo="Typo.caption" Class="dash-muted">@u.Days days · @u.Status</MudText>
+                        </div>
+                    </div>
+                }
+            </MudPaper>
+
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
+    private readonly DateTime _today = DateTime.Now;
+
+    // --- Replace all of the below with calls into your injected services ---
+
+    private record LeaveBalance(int BaseDays, int ExtraDays, int Used, int Pending, int SummerBlockDays)
+    {
+        public int Total => BaseDays + ExtraDays;
+        public int Remaining => Total - Used - Pending;
+        public double UsedPercent => Total == 0 ? 0 : Math.Round(Used * 100.0 / Total, 1);
+        public double PendingPercent => Total == 0 ? 0 : Math.Round(Pending * 100.0 / Total, 1);
+        public double RemainingPercent => Total == 0 ? 0 : Math.Round(Remaining * 100.0 / Total, 1);
+    }
+
+    private record SchoolYearInfo(DateTime Start, DateTime End, DateTime Today)
+    {
+        public string Label => $"{Start:yyyy}/{End:yyyy}";
+        public int TotalDays => (End - Start).Days;
+        public int DayNumber => Math.Clamp((Today - Start).Days, 0, TotalDays);
+        public int PercentElapsed => TotalDays == 0 ? 0 : (int)Math.Round(DayNumber * 100.0 / TotalDays);
+        public int DaysUntilSummer
+        {
+            get
+            {
+                var summerStart = new DateTime(Today.Month >= 7 ? Today.Year + 1 : Today.Year, 6, 15);
+                var diff = (summerStart - Today).Days;
+                return diff < 0 ? 0 : diff;
+            }
+        }
+    }
+
+    private record Profile(string Name, string Role, string Institution, string EmployeeId, string Email, int JoinedYear)
+    {
+        public string Initials => string.Concat(Name.Split(' ').Select(p => p[0]));
+    }
+
+    private record LeaveRequest(DateTime Start, DateTime End, int Days, string Status, DateTime RequestedOn);
+
+    private record NextLeave(DateTime Start, DateTime End, int Days, DateTime Today)
+    {
+        public int DaysUntil => Math.Max(0, (Start - Today).Days);
+    }
+
+    private LeaveBalance _balance = new(BaseDays: 34, ExtraDays: 16, Used: 22, Pending: 5, SummerBlockDays: 20);
+
+    private SchoolYearInfo _schoolYear = new(
+        Start: new DateTime(DateTime.Now.Month >= 9 ? DateTime.Now.Year : DateTime.Now.Year - 1, 9, 1),
+        End: new DateTime(DateTime.Now.Month >= 9 ? DateTime.Now.Year + 1 : DateTime.Now.Year, 8, 31),
+        Today: DateTime.Now);
+
+    private Profile _profile = new(
+        Name: "Anna Kovács",
+        Role: "Teacher",
+        Institution: "Vaszary János Technikum",
+        EmployeeId: "T-2291",
+        Email: "anna.kovacs@vaszc-nadasdy.hu",
+        JoinedYear: 2018);
+
+    private List<LeaveRequest> _requests = new()
+    {
+        new(new DateTime(2026, 6, 15), new DateTime(2026, 8, 20), 20, "Approved", new DateTime(2026, 3, 2)),
+        new(new DateTime(2026, 10, 26), new DateTime(2026, 10, 30), 3, "Pending", new DateTime(2026, 7, 20)),
+        new(new DateTime(2026, 12, 21), new DateTime(2026, 12, 23), 2, "Approved", new DateTime(2026, 11, 5)),
+        new(new DateTime(2026, 4, 6), new DateTime(2026, 4, 6), 1, "Rejected", new DateTime(2026, 3, 28)),
+    };
+
+    private int _pendingCount => _requests.Count(r => r.Status == "Pending");
+
+    private NextLeave? _nextLeave = new(new DateTime(2026, 10, 26), new DateTime(2026, 10, 30), 3, DateTime.Now);
+
+    private record UpcomingLeaveItem(DateTime Start, DateTime End, int Days, string Status);
+
+    private List<UpcomingLeaveItem> _upcomingLeave = new()
+    {
+        new(new DateTime(2026, 10, 26), new DateTime(2026, 10, 30), 3, "Pending"),
+        new(new DateTime(2026, 12, 21), new DateTime(2026, 12, 23), 2, "Approved"),
+        new(new DateTime(2027, 2, 15), new DateTime(2027, 2, 19), 4, "Approved"),
+    };
+
+    private static string StatusChipClass(string status) => status switch
+    {
+        "Approved" => "chip-status chip-approved",
+        "Pending" => "chip-status chip-pending",
+        "Rejected" => "chip-status chip-rejected",
+        _ => "chip-status",
+    };
+}

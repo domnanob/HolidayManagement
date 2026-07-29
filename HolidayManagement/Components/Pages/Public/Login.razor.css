@@ -1,0 +1,74 @@
+/* Login — page-layout rules only. Colors/tokens and reusable atoms
+   (card-surface, btn-primary, icon-badge, alert-soft, etc.) come from
+   wwwroot/css/app-theme.css (linked globally). */
+
+::deep .login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+::deep .login-card {
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 8px 28px rgba(11, 110, 102, 0.08);
+    padding: 40px 36px;
+}
+
+/* ---------- Header ---------- */
+::deep .login-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+::deep .login-badge {
+    margin: 0 auto 16px;
+}
+
+::deep .login-title {
+    color: var(--kr-ink);
+    font-weight: 700;
+}
+
+::deep .login-loading {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+}
+
+::deep .login-error {
+    margin-bottom: 20px;
+}
+
+/* ---------- Form spacing ---------- */
+::deep .login-field {
+    margin-bottom: 22px !important;
+}
+
+::deep .login-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+::deep .login-submit {
+    margin-bottom: 20px;
+    padding: 12px 0 !important;
+    font-size: 1rem;
+}
+
+::deep .login-footer-text {
+    text-align: center;
+}
+
+::deep .login-divider {
+    margin: 20px 0 !important;
+}
+
+::deep .login-copyright {
+    display: block;
+    text-align: center;
+}

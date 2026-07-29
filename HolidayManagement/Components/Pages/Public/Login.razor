@@ -4,12 +4,7 @@
 
 
 @using Microsoft.JSInterop
-@using System.Security.Claims
-@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Authentication.Cookies
-@using HolidayManagement.Helpers
 @using HolidayManagement.Models.Login
-@using Microsoft.AspNetCore.Http
 
 @inject Services.Interfaces.IModelService<User> userService
 @inject Services.Interfaces.IModelService<UserInstitution> userInstitutionService
@@ -20,132 +15,129 @@
 @inject IJSRuntime JS
 
 <PageTitle>Login - Holiday Management</PageTitle>
+<div>
+    <div class="login-page">
+        <MudPaper Elevation="0" Class="login-card">
 
-<MudContainer MaxWidth="MaxWidth.Small" Style="height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0;">
-    <MudPaper Elevation="3" Class="pa-8" Style="width: 100%; border-radius: 16px; overflow: visible; position: relative;">
-        <!-- Header Section -->
-        <div style="text-align: center; margin-bottom: 32px;">
-            <MudText Typo="Typo.h3" GutterBottom="true" Style="font-weight: 700; margin-bottom: 12px;">
-                🔐 Holiday Management
-            </MudText>
-            <MudText Typo="Typo.body2" Color="Color.Default">
-                Manage your holidays efficiently
-            </MudText>
-        </div>
+            <!-- Header -->
+            <div class="login-header">
+                <div class="login-badge">
+                    <MudIcon Icon="@Icons.Material.Filled.BeachAccess" Class="login-badge-icon" />
+                </div>
+                <MudText Typo="Typo.h5" Class="login-title">Holiday Management</MudText>
+                <MudText Typo="Typo.body2" Class="login-subtitle">Kezelje hatékonyan szabadságát</MudText>
+            </div>
 
-        @if (!firstRenderComplete)
-        {
-
-            <MudText Typo="Typo.body2" Color="Color.Default" Style="text-align: center;">
-                <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" Class="mb-4" />
-            </MudText>
-        }
-        else
-        {
-
-            <!-- Error Message -->
-            @if (!string.IsNullOrEmpty(errorMessage))
+            @if (!firstRenderComplete)
             {
-                <div class="mb-3 text-center alert alert-danger">
-                    <span class="text-danger">@errorMessage</span>
+                <div class="login-loading">
+                    <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" />
                 </div>
             }
+            else
+            {
+                <!-- Error Message -->
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="login-error">
+                        <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Size="Size.Small" />
+                        <span>@errorMessage</span>
+                    </div>
+                }
 
-            <!-- Login Form -->
-            <EditForm Model="@loginRequest" OnSubmit="HandleLogin" FormName="LoginForm">
-                <DataAnnotationsValidator />
+                <!-- Login Form -->
+                <EditForm Model="@loginRequest" OnSubmit="HandleLogin" FormName="LoginForm">
+                    <DataAnnotationsValidator />
 
-                <!-- Institution Selection -->
-                <MudSelect T="string" @bind-Value="loginRequest.InstitutionId" Label="Select your Institution" FullWidth="true" FitContent="true" Variant="Variant.Outlined" ShrinkLabel>
-                    @foreach (var institution in institutions)
-                    {
-                        <MudSelectItem Value="@institution.Id.ToString()">@institution.Name</MudSelectItem>
-                    }
-                </MudSelect>
+                    <!-- Institution Selection -->
+                    <MudSelect T="string" @bind-Value="loginRequest.InstitutionId" Label="Válassza ki az intézményt"
+                               FullWidth="true" Variant="Variant.Outlined" ShrinkLabel Class="login-field">
+                        @foreach (var institution in institutions)
+                        {
+                            <MudSelectItem Value="@institution.Id.ToString()">@institution.Name</MudSelectItem>
+                        }
+                    </MudSelect>
 
+                    <!-- Username Field -->
+                    <MudTextField @bind-Value="loginRequest.Username"
+                                  Label="Felhasználónév"
+                                  Placeholder="Adja meg felhasználónevét"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  FullWidth="true"
+                                  Class="login-field"
+                                  StartAdornment="@(new RenderFragment(b => { b.OpenComponent<MudIcon>(0); b.AddAttribute(1, "Icon", Icons.Material.Outlined.Person); b.CloseComponent(); }))"
+                                  StartAdornmentColor="Color.Inherit">
+                    </MudTextField>
 
-                <!-- Username Field -->
-                <MudTextField @bind-Value="loginRequest.Username"
-                              Label="Username"
-                              Placeholder="Enter your username"
-                              Variant="Variant.Outlined"
-                              Margin="Margin.Dense"
-                              FullWidth="true"
-                              Class="mb-4"
-                              StartAdornment="@(new RenderFragment(b => { b.OpenComponent<MudIcon>(0); b.AddAttribute(1, "Icon", Icons.Material.Outlined.Person); b.CloseComponent(); }))"
-                              StartAdornmentColor="Color.Inherit">
-                </MudTextField>
+                    <!-- Password Field with Toggle -->
+                    <MudTextField @bind-Value="loginRequest.Password"
+                                  Label="Jelszó"
+                                  Placeholder="Adja meg jelszavát"
+                                  InputType="@passwordInputType"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  FullWidth="true"
+                                  Class="login-field"
+                                  StartAdornment="@(new RenderFragment(b => { b.OpenComponent<MudIcon>(0); b.AddAttribute(1, "Icon", Icons.Material.Outlined.Lock); b.CloseComponent(); }))"
+                                  StartAdornmentColor="Color.Inherit"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@passwordIcon"
+                                  OnAdornmentClick="TogglePasswordVisibility"
+                                  AdornmentAriaLabel="Toggle password visibility">
+                    </MudTextField>
 
-                <!-- Password Field with Toggle -->
-                <MudTextField @bind-Value="loginRequest.Password"
-                              Label="Password"
-                              Placeholder="Enter your password"
-                              InputType="@passwordInputType"
-                              Variant="Variant.Outlined"
-                              Margin="Margin.Dense"
-                              FullWidth="true"
-                              Class="mb-4"
-                              StartAdornment="@(new RenderFragment(b => { b.OpenComponent<MudIcon>(0); b.AddAttribute(1, "Icon", Icons.Material.Outlined.Lock); b.CloseComponent(); }))"
-                              StartAdornmentColor="Color.Inherit"
-                              Adornment="Adornment.End"
-                              AdornmentIcon="@passwordIcon"
-                              OnAdornmentClick="TogglePasswordVisibility"
-                              AdornmentAriaLabel="Toggle password visibility">
-                </MudTextField>
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="login-row">
+                        <MudCheckBox T="bool" @bind-Checked="@rememberMe" Label="Emlékezzen rám" Color="Color.Primary" Size="Size.Small" />
+                        <MudLink Href="#" Typo="Typo.body2" Class="login-link">
+                            Elfelejtette a jelszavát?
+                        </MudLink>
+                    </div>
 
-                <!-- Remember Me & Forgot Password -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                    <MudCheckBox T="bool" @bind-Checked="@rememberMe" Label="Remember me" Color="Color.Primary" Size="Size.Small" />
-                    <MudLink Href="#" Typo="Typo.body2" Color="Color.Primary">
-                        Forgot password?
+                    <!-- Login Button -->
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Size="Size.Large"
+                               FullWidth="true"
+                               Disabled="@isLoading"
+                               Class="btn-primary login-submit">
+                        @if (isLoading)
+                        {
+                            <MudProgressCircular Class="me-2" Size="Size.Small" Indeterminate="true" />
+                            <span>Bejelentkezés...</span>
+                        }
+                        else
+                        {
+                            <span>Bejelentkezés</span>
+                        }
+                    </MudButton>
+                </EditForm>
+            }
+
+            <!-- Sign Up Link -->
+            <MudDivider Class="login-divider" />
+
+            <div class="login-footer-text">
+                <MudText Typo="Typo.body2" Class="login-subtitle">
+                    Nincs még fiókja?
+                    <MudLink Href="/register" Class="login-link">
+                        Regisztráljon itt
                     </MudLink>
-                </div>
+                </MudText>
+            </div>
 
-                <!-- Login Button -->
-                <MudButton ButtonType="ButtonType.Submit"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           Size="Size.Large"
-                           FullWidth="true"
-                           Disabled="@isLoading"
-                           Class="mb-4">
-                    @if (isLoading)
-                    {
-                        <MudProgressCircular Class="me-2" Size="Size.Small" Indeterminate="true" />
-                        <span>Logging in...</span>
-                    }
-                    else
-                    {
-                        <span>Sign In</span>
-                    }
-                </MudButton>
-            </EditForm>
-
-        }
-
-        <!-- Sign Up Link -->
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4" />
-
-        <div style="text-align: center;">
-            <MudText Typo="Typo.body2" Color="Color.Default">
-                Don't have an account?
-                <MudLink Href="/register" Color="Color.Primary">
-                    Sign up here
-                </MudLink>
+            <!-- Footer -->
+            <MudDivider Class="login-divider" />
+            <MudText Typo="Typo.caption" Class="login-copyright">
+                &copy; 2026 Holiday Management System. All rights reserved.
             </MudText>
-        </div>
-
-        <!-- Footer -->
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-6" />
-        <MudText Typo="Typo.caption" Color="Color.Default" Style="text-align: center;">
-            &copy; 2026 Holiday Management System. All rights reserved.
-        </MudText>
-    </MudPaper>
-</MudContainer>
-
+        </MudPaper>
+    </div>
+</div>
 @code {
-        [SupplyParameterFromForm]
-        private LoginUser loginRequest { get; set; } = new();
+    [SupplyParameterFromForm]
+    private LoginUser loginRequest { get; set; } = new();
 
     private List<User> users;
     private List<Role> roles;
@@ -212,7 +204,8 @@
             institutions = await institutionService.GetAll();
 
             firstRenderComplete = true;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             errorMessage = "An error occurred while loading data. Please reload the page.";
         }

@@ -48,7 +48,8 @@ begin TRY
 		email varchar(50),
 		birth date,
 		phone varchar(20),
-		children int
+		children int,
+		fullname varchar(50)
 	)
 	PRINT 'user_data created successfully!'
 
@@ -66,11 +67,24 @@ begin TRY
 		user_id uniqueidentifier,
 		institution_id uniqueidentifier,
 		role_id uniqueidentifier,
+		created_at date,
+		active tinyint,
 		constraint fk_user_institutions_users foreign key (user_id) references users(id) on delete cascade,
 		constraint fk_user_institutions_institutions foreign key (institution_id) references institutions(id) on delete cascade,
 		constraint fk_user_institutions_roles foreign key (role_id) references roles(id) on delete cascade
 	)
 	PRINT 'user_institutions created successfully!'
+
+	create table holiday_requests (
+		id uniqueidentifier Primary Key DEFAULT newsequentialid(),
+		user_institution_id uniqueidentifier,
+		requested_day date,
+		created_at date,
+		allowed_at date,
+		declined_at date,
+		message text,
+		constraint fk_holiday_requests_user_institutions foreign key (user_institution_id) references user_institutions(id) on delete cascade,
+	)
 
 	create table login_logs (
 		id int IDENTITY(1,1) Primary Key,
@@ -86,6 +100,13 @@ begin TRY
 	insert into roles(role_name, role_group_id) values('admin', (Select Id From role_groups where group_name = 'admin'))
 	insert into roles(role_name, role_group_id) values('teacher', (Select Id From role_groups where group_name = 'user'))
 	insert into roles(role_name, role_group_id) values('principal', (Select Id From role_groups where group_name = 'user'))
+
+	insert into centers(id, center_name) values('1D0DCC87-0A7E-4F5B-A9EA-B280C8F5F955', 'Vasvármegyei Szakképzési Centrum') 
+	insert into institutions (id, institution_name, center_id) values('5B1CD299-12D7-475F-80EF-E47E8C7F3019', 'Nádasdy Tamás Technikum és Kollégium', '1D0DCC87-0A7E-4F5B-A9EA-B280C8F5F955')
+
+	insert into user_data(id, fullname, birth, email, children, phone) values ('77E5B60C-CBEA-4DFD-BB98-68904CDEE801', 'dr. Admin Admin', '2002-11-28', 'admin@vvszc.hu', 0, '+36303627517')
+	insert into users(user_data_id, username, password) values ('77E5B60C-CBEA-4DFD-BB98-68904CDEE801', 'admin', 'A82D01D3B9C7315E991589E029C5A77CA1EBD01F51A22D10CBB3780B4D4C24F1-Alice-5DDE095006706E27C3F8BA020C4CB60A')
+	insert into user_institutions(institution_id, user_id, role_id, created_at, active) values ('5B1CD299-12D7-475F-80EF-E47E8C7F3019', (Select id from users where username = 'admin'), (Select id from roles where roles.role_name = 'teacher'), CURRENT_DATE, 1)
 	
 	commit TRANSACTION
 	PRINT 'Database created successfully!'

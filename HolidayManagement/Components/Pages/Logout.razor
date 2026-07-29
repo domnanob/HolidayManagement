@@ -1,0 +1,39 @@
+﻿@page "/logout"
+@rendermode InteractiveServer
+
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+
+<MudPaper Class="panel profile-panel mb-5" Elevation="0">
+    <div style="text-align: center; margin-bottom: 32px;">
+        <MudProgressCircular Color="Color.Success" Indeterminate="true" />
+        <MudText Typo="Typo.h5" Class="dash-title">Épp kilépünk...</MudText>
+    </div>
+</MudPaper>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var result = await JS.InvokeAsync<LogoutResult>("logoutRequest");
+
+            if (result.Success)
+            {
+                Navigation.NavigateTo("/public/login", forceLoad: true);
+            }
+        }
+        catch (Exception)
+        {
+            // optional: show an error message, or just navigate anyway
+            Navigation.NavigateTo("/public/login", forceLoad: true);
+        }
+    }
+
+    public class LogoutResult
+    {
+        public bool Success { get; set; }
+    }
+}

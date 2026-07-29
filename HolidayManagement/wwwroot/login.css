@@ -1,0 +1,165 @@
+﻿/* Variables live on .login-page, not :root — see MainLayout.razor.css for why
+   :root doesn't work in an isolated .razor.css file. */
+ .login-page {
+    --kr-teal: #0EA99D;
+    --kr-teal-dark: #0B6E66;
+    --kr-teal-tint: #E4F5F3;
+    --kr-red: #E0533D;
+    --kr-red-tint: #FBE7E3;
+    --kr-ink: #1B2B29;
+    --kr-muted: #64807C;
+    --kr-border: #E1EEEC;
+    --kr-bg: #F6FAF9;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--kr-bg);
+    padding: 24px;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+ .login-card {
+    width: 100%;
+    max-width: 440px;
+    background: #fff;
+    border: 1px solid var(--kr-border);
+    border-radius: 16px;
+    box-shadow: 0 8px 28px rgba(11, 110, 102, 0.08);
+    padding: 40px 36px;
+}
+
+/* ---------- Header ---------- */
+ .login-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+ .login-badge {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: var(--kr-teal-tint);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+ .login-badge-icon {
+    color: var(--kr-teal);
+    font-size: 30px;
+}
+
+ .login-title {
+    color: var(--kr-ink);
+    font-weight: 700;
+}
+
+ .login-subtitle {
+    color: var(--kr-muted) !important;
+}
+
+ .login-loading {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+}
+
+/* ---------- Error banner ---------- */
+ .login-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--kr-red-tint);
+    color: var(--kr-red);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    font-size: .88rem;
+}
+
+/* ---------- Form spacing ---------- */
+ .login-field {
+    margin-bottom: 22px !important;
+}
+
+ .login-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+ .login-link,
+ .login-link a {
+    color: var(--kr-teal) !important;
+}
+
+ .login-submit {
+    margin-bottom: 20px;
+    padding: 12px 0 !important;
+    font-size: 1rem;
+}
+
+ .login-divider {
+    border-color: var(--kr-border) !important;
+    margin: 20px 0 !important;
+}
+
+ .login-footer-text {
+    text-align: center;
+}
+
+ .login-copyright {
+    display: block;
+    text-align: center;
+    color: var(--kr-muted) !important;
+}
+
+/* ---------- Primary button ---------- */
+ .btn-primary {
+    background-color: var(--kr-teal) !important;
+    color: #fff !important;
+    text-transform: none;
+    box-shadow: none !important;
+    border-radius: 10px !important;
+}
+
+     .btn-primary:hover {
+        background-color: var(--kr-teal-dark) !important;
+    }
+
+     .btn-primary.mud-disabled {
+        background-color: var(--kr-teal) !important;
+        opacity: .6;
+    }
+
+/* ---------- Re-skin MudBlazor's "Primary" color to teal, scoped to this page ---------- */
+ .mud-checkbox-true .mud-icon-root,
+ .mud-checkbox-true.mud-primary-text {
+    color: var(--kr-teal) !important;
+}
+
+ .mud-progress-circular.mud-primary .mud-progress-circular-circle {
+    stroke: var(--kr-teal) !important;
+}
+
+/* Outlined text field / select border + label color on focus */
+ .mud-input-outlined.mud-shrink.mud-input-focused .mud-input-outlined-border,
+ .mud-input-outlined.mud-input-focused .mud-input-outlined-border {
+    border-color: var(--kr-teal) !important;
+}
+
+ .mud-input-outlined.mud-input-focused .mud-input-label {
+    color: var(--kr-teal) !important;
+}
+
+ .mud-input-outlined:hover .mud-input-outlined-border {
+    border-color: var(--kr-teal) !important;
+}
+
+/* Start/end adornment icons inside the text fields */
+ .login-field .mud-input-adornment .mud-icon-root {
+    color: var(--kr-muted);
+}
