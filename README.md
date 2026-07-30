@@ -53,7 +53,8 @@ This project is a single-developer application designed for high performance, ea
 
 ## 🗂️ Database Overview (Core Concepts)
 
-<img width="1061" height="546" alt="image" src="https://github.com/user-attachments/assets/4ac37bbd-b562-40e0-8858-32bca6dedf86" />
+<img width="913" height="619" alt="image" src="https://github.com/user-attachments/assets/3e5786e9-9a12-4f95-a1f3-0a4d69c758fb" />
+
 
 ## 📄 License
 This project is proprietary software designed for specific Hungarian educational administrative frameworks. All rights reserved.
